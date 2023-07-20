@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rocket 3D Model</title>
+  <!-- Include the Three.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/three.min.js"></script>
+  <!-- Include the GLTFLoader script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/loaders/GLTFLoader.min.js"></script>
+</head>
+<body>
+  <div id="3Drocket"></div>
+
+  <script>
+    let scene, camera, renderer, rocket;
+
+    function parentWidth(elem) {
+      return elem.parentElement.clientWidth;
+    }
+
+    function parentHeight(elem) {
+      return elem.parentElement.clientHeight;
+    }
+
+    function init3D() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff);
+
+      camera = new THREE.PerspectiveCamera(75, parentWidth(document.getElementById("3Drocket")) / parentHeight(document.getElementById("3Drocket")), 0.1, 1000);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(parentWidth(document.getElementById("3Drocket")), parentHeight(document.getElementById("3Drocket")));
+
+      document.getElementById('3Drocket').appendChild(renderer.domElement);
+
+      // Load the rocket model in GLB format
+      const loader = new THREE.GLTFLoader();
+      loader.load('rocket.glb', function (gltf) {
+        rocket = gltf.scene;
+        scene.add(rocket);
+      });
+
+      camera.position.z = 5;
+    }
+
+    // Resize the 3D object when the browser window changes size
+    function onWindowResize() {
+      camera.aspect = parentWidth(document.getElementById("3Drocket")) / parentHeight(document.getElementById("3Drocket"));
+      camera.updateProjectionMatrix();
+      renderer.setSize(parentWidth(document.getElementById("3Drocket")), parentHeight(document.getElementById("3Drocket")));
+    }
+
+    window.addEventListener('resize', onWindowResize, false);
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Rotate the rocket (you can modify the rotation values as needed)
+      if (rocket) {
+        rocket.rotation.x += 0.01;
+        rocket.rotation.y += 0.01;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Create the 3D representation
+    init3D();
+    animate();
+  </script>
+</body>
+</html>
